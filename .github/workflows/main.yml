@@ -43,7 +43,7 @@ jobs:
       - name: Push page
         run: |
           rm -rf node_modules
-          rsync -a -v subdir/ ./
+          rsync -a -v site/ ./
           rm -rf site
           git config --global user.name 'ChimiDEV'
           git config --global user.email 'ChimiDEV@gmail.com'
