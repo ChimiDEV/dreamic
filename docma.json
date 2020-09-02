@@ -1,0 +1,56 @@
+{
+  "jsdoc": {
+    "plugins": ["plugins/markdown"]
+  },
+  "app": {
+    "title": "Dreamic",
+    "base": "/dreamic",
+    "routing": "path",
+    "server": "github",
+    "favicon": "./favicon.ico"
+  },
+  "template": {
+    "path": "zebra",
+    "options": {
+      "title": {
+        "label": "Dreamic",
+        "href": "."
+      },
+      "sidebar": {
+        "enabled": true,
+        "outline": "tree",
+        "toolbar": true,
+        "itemsFolded": false,
+        "itemsOverflow": "crop",
+        "badges": true,
+        "search": true,
+        "animations": true
+      },
+      "navbar": {
+        "enabled": true,
+        "fixed": true,
+        "dark": false,
+        "animations": true,
+        "menu": [
+          {
+            "iconClass": "fab fa-lg fa-github",
+            "label": "README",
+            "href": "./README.md"
+          },
+          {
+            "iconClass": "fab fa-lg fa-github",
+            "label": "",
+            "href": "https://github.com/ChimiDEV/dreamic",
+            "target": "_blank"
+          }
+        ]
+      }
+    }
+  },
+  "src": ["./src/**/*.js", "./src/*.js", "./README.md"],
+  "assets": {
+    "/images": ["./docs/images/*.*"]
+  },
+  "dest": "./site",
+  "clean": true
+}
