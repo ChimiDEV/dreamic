@@ -1,5 +1,6 @@
 {
   "jsdoc": {
+    "undescribed": true,
     "plugins": ["plugins/markdown"]
   },
   "app": {
