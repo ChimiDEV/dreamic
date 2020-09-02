@@ -43,8 +43,10 @@ jobs:
       - name: Push page
         run: |
           rm -rf node_modules
-          mv site/* .
+          rsync -a -v subdir/ ./
           rm -rf site
+          git config --global user.name 'ChimiDEV'
+          git config --global user.email 'ChimiDEV@gmail.com'
           git add .
           git commit -m "CI: update page"
           git push
