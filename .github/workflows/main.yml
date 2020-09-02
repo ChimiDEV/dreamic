@@ -34,16 +34,20 @@ jobs:
         run: |
           yarn docma
 
-      - name: Begin CI...
+      - name: Checkout gh-page
         uses: actions/checkout@v2
         with:
           ref: gh-page
           clean: false
 
-      - name: Test
+      - name: Push page
         run: |
-          git status
-          ls -al
+          rm -rf node_modules
+          mv site/* .
+          rm -rf site
+          git add .
+          git commit -m "CI: update page"
+          git push
 
   # build:
   #   runs-on: ubuntu-latest
