@@ -48,7 +48,7 @@
       }
     }
   },
-  "src": ["./src/**/*.js", "./src/*.js", "./README.md"],
+  "src": ["./dist/**/*.js", "./dist/*.js", "./README.md"],
   "assets": {
     "/images": ["./docs/images/*.*"]
   },
