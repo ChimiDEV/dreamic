@@ -2,8 +2,7 @@ name: Page
 on:
   push:
     branches:
-      - master
-      - develop
+      - docs
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -30,23 +29,7 @@ jobs:
         env:
           CI: true
 
-      - name: Create Page
-        run: |
-          yarn docma
 
-      - name: Checkout gh-page
-        uses: actions/checkout@v2
-        with:
-          ref: gh-page
-          clean: false
-
-      - name: Publish page
+      - name: Build and Deploy
         run: |
-          rm -rf node_modules
-          rsync -a -v site/ ./
-          rm -rf site
-          git config --global user.name 'ChimiDEV'
-          git config --global user.email 'ChimiDEV@gmail.com'
-          git add .
-          git commit -m "CI: update page"
-          git push
+         GIT_USER=ChimiDEV USE_SSH=true yarn deploy
