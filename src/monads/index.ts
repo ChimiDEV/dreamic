@@ -1,1 +1,1 @@
-export { MaybeStatic as Maybe, maybe, nothing } from './Maybe';
+export { MaybeStatic as Maybe, maybe, nothing, just } from './Maybe';

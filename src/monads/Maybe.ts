@@ -1,7 +1,7 @@
-import _ from 'lodash/fp';
+// import _ from 'lodash/fp';
 import chalk from 'chalk';
 import { Value, inspect, inspectFn } from '../core/Value';
-import { Functor } from './Base';
+import { Functor } from './FantasyLand';
 
 export type Maybe<T> = Just<T> | Nothing<T>;
 
@@ -12,11 +12,11 @@ export enum MaybeType {
 
 export class MaybeStatic {
   static of<T>(value: T): Maybe<T> {
-    return <Maybe<T>>new Just(value);
+    return new Just(value) as Maybe<T>;
   }
 
   static empty<T>(): Maybe<T> {
-    return <Nothing<T>>nothing();
+    return nothing() as Nothing<T>;
   }
 }
 
@@ -58,7 +58,7 @@ export class Nothing<T> implements Value, Functor<T> {
   }
 
   map<U>(fn: (value: T) => U): Maybe<U> {
-    return <Nothing<U>>nothing();
+    return nothing() as Nothing<U>;
   }
 
   toString(): string {
