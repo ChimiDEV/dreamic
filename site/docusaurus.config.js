@@ -7,6 +7,7 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'ChimiDEV',
   projectName: 'Dreamic',
+  onBrokenLinks: 'ignore',
   stylesheets: ['https://fonts.googleapis.com/css2?family=Fira+Code'],
   themeConfig: {
     prism: {
