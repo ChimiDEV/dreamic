@@ -1,13 +1,10 @@
 ---
-id: doc1
-title: TBD
-sidebar_label: TBD
-slug: /
+id: design
+title: 'Core: Motivation and Design'
+sidebar_label: Motivation and Design
 ---
 
 tbd.
-
-sf
 
 <!--
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
