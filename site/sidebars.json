@@ -1,5 +1,6 @@
 {
   "sidebar": {
-    "Core": ["core/design", "core/monads"]
+    "Dreamic": ["core/design", "core/monads"],
+    "Monads": ["monads/maybe"]
   }
 }

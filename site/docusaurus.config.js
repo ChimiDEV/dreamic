@@ -7,7 +7,11 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'ChimiDEV',
   projectName: 'Dreamic',
+  stylesheets: ['https://fonts.googleapis.com/css2?family=Fira+Code'],
   themeConfig: {
+    prism: {
+      theme: require('prism-react-renderer/themes/vsDark'),
+    },
     colorMode: {
       switchConfig: {
         darkIcon: ' ',
