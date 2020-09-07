@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[12],{72:function(a){a.exports=JSON.parse('{"tbd":{"allTagsPath":"/dreamic/blog/tags","slug":"tbd","name":"tbd","count":1,"permalink":"/dreamic/blog/tags/tbd"}}')}}]);
