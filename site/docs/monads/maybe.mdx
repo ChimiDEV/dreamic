@@ -19,8 +19,8 @@ This monad is helpful, if you are working with values that might not exist _or_ 
 A `Maybe` is either `Just` the value or simply `Nothing`.
 
 The maybe monad abstracts away annoying type guards or defensive `if` statements.
-While `Just` will work as excpeted, a `Nothing` simply returns itself without invoking any unsage operation.
-For example, if you try to map the value from a string to a number, this operation will only happen, if the respective value is a `Just`.
+While **Just** will work as excpeted, a **Nothing** simply returns itself without invoking any unsafe operation.
+For example, if you try to map the value from a string to a number, this operation will only happen, if the respective value is a **Just**.
 
 ```ts
 import { Maybe } from '@chimidev/dreamic';

@@ -3,11 +3,10 @@ module.exports = {
   tagline: 'Follow your dreams, using fantasy-land conform types and utility.',
   url: 'https://chimidev.github.io',
   baseUrl: '/dreamic/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'ignore',
   favicon: 'img/favicon.ico',
   organizationName: 'ChimiDEV',
   projectName: 'Dreamic',
-  onBrokenLinks: 'ignore',
   stylesheets: ['https://fonts.googleapis.com/css2?family=Fira+Code'],
   themeConfig: {
     prism: {
@@ -81,6 +80,9 @@ module.exports = {
     [
       '@docusaurus/preset-classic',
       {
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
