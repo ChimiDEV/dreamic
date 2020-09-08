@@ -4,7 +4,42 @@ title: Motivation and Design
 sidebar_label: Motivation and Design
 ---
 
-tbd.
+## Usage
+
+Every available monad by Dreamic comes with a specified way of creating and interacting with each.
+For easier usage all of them will **share** common functionalities, which will be described below.
+Otherwise there may exist some additionally functions specific to a monad. But don't worry, that will be documented.
+
+However since you may wonder how this _common functionality_ might look like, here is little introduction:
+
+### Factory Functions
+
+A monad comes with a set of factory functions.
+This will usually be just the name prefixed with **f**, i.e. `f[MonadName]` (obviously you can rename the import the way you want).
+If for any reason a monad combines different characteristics (e.g. a **Maybe** being **'Just'** or **'Nothing'**), each of them will be offering their own factory function.
+
+Since monads come with different features and use cases, the factory function footprint and outcome might differ from monad to monad.
+For example while a **Maybe** factory has following signature:  
+`fMaybe:: a -> a -> Maybe a | maybe(defaultValue, optionalValue)`  
+The factory function of **Either** does look like:  
+`fEither:: (() -> a) -> Either e a | either(throwingFunction)`
+
+So if you're using a factory function make sure to refer to the documentation of the respective monad.
+
+### Static Methods
+
+Monads do expose a "static method"-like namespace, this will be export simply as the name of the monad all lowercase.
+This instance is helpful for some point-free (see below) utility as well, hence the decision to take the name als exported keword.
+Obviously most static functions are specific to each monad himself, however some functions are available through **Fantasy-Land**.
+For example `of` ([Applicative](https://github.com/fantasyland/fantasy-land#applicative)) is another way to create a new monad from a value.
+
+### Customized Creation of Monads
+
+The last alternative for creating a monad is not a shared feature over every monad.
+Some monads do come with specifically created functions to create a monad.
+Since this depends on the type of monad you're working with, you'll have to look up the documentation.
+
+## Point-free notation
 
 <!--
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
