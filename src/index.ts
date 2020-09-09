@@ -1,5 +1,31 @@
-import { Maybe } from './monads';
+import {
+  maybe,
+  fJust,
+  fNothing,
+  fMaybe,
+  either,
+  fLeft,
+  fRight,
+  fEither,
+} from './monads';
 
-const m = Maybe.of('string');
+export {
+  Maybe,
+  fJust,
+  fNothing,
+  Either,
+  fLeft,
+  fRight,
+  fEither,
+} from './monads';
 
-console.log(m);
+export default {
+  maybe,
+  fJust,
+  fNothing,
+  fMaybe,
+  either,
+  fLeft,
+  fRight,
+  fEither,
+};
