@@ -9,3 +9,17 @@ export type Apply<T> = Functor<T> & {
 export type Chain<T> = Apply<T> & {
   chain<U>(fn: (v: T) => Chain<U>): Chain<U>;
 };
+
+export type Monad<T> = Chain<T>; // Also should implement Applicative, but not able to represent via TS
+
+/*
+ * Usually these types below would have to implement other types as well.
+ * Since there are some limitations by TS, we cannot define static methods on a type together with its instance methods.
+ */
+export type Applicative = {
+  of<T>(value: T): any;
+};
+
+export type Monoid = {
+  empty(): any;
+};
