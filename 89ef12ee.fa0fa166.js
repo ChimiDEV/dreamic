@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{68:function(a){a.exports=JSON.parse('{"allTagsPath":"/dreamic/blog/tags","slug":"fantasy-land","name":"fantasy-land","count":1,"permalink":"/dreamic/blog/tags/fantasy-land"}')}}]);
