@@ -114,7 +114,7 @@ export class Nothing<T> implements Value, Monad<T> {
   }
 }
 
-export const fNothing = () => new Nothing<any>();
-export const fJust = <T>(value: T) => maybe.of<T>(value);
-export const fMaybe = <T>(defaultValue: T, value: T) =>
+export const fNothing = (): Maybe<never> => new Nothing<never>();
+export const fJust = <T>(value: T): Maybe<T> => maybe.of<T>(value);
+export const fMaybe = <T>(defaultValue: T, value: T): Maybe<T> =>
   maybe.of<T>(_.isUndefined(value) ? defaultValue : value);
