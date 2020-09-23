@@ -57,6 +57,8 @@ export class Just<T> implements Value, Monad<T> {
     return chained;
   }
 
+  extend<U>(): Maybe<U> {}
+
   extract(): T {
     return this.$value;
   }

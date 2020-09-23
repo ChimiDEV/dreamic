@@ -1,5 +1,11 @@
 import { Maybe, fMaybe, fJust, fNothing, maybe } from '../src/monads';
-import { isFunctor, isApply, isApplicative, isMonoid } from './fantasy-land';
+import {
+  isFunctor,
+  isApply,
+  isChain,
+  isApplicative,
+  isMonoid,
+} from './fantasy-land';
 import { Just, Nothing } from '../src/monads/Maybe';
 
 describe('Monads/Maybe', () => {
@@ -23,6 +29,15 @@ describe('Monads/Maybe', () => {
       describe('Factory: Maybe', () =>
         isApply((v: any) => fMaybe('ignored', v), factoryMaybe));
       describe('Maybe.of', () => isApply(maybe.of, ofMaybe));
+    });
+
+    describe('Chain', () => {
+      describe('Factory: Just', () => isChain(fJust, just));
+      describe('Factory: Nothing', () =>
+        isChain(fNothing, (nothing as unknown) as Maybe<any>));
+      describe('Factory: Maybe', () =>
+        isChain((v: any) => fMaybe('ignored', v), factoryMaybe));
+      describe('Maybe.of', () => isChain(maybe.of, ofMaybe));
     });
 
     describe('Applicative', () => isApplicative(maybe, Just));

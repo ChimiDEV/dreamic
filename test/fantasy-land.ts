@@ -38,6 +38,15 @@ export const apComposition = (creator: any, apply: Apply<any>) => {
   );
 };
 
+export const chainAssociativity = (creator: any, c: Chain<any>) => {
+  const chainedConcat = (append: string) => (str: string): Chain<string> =>
+    append.length > 0 ? creator(`${str} ${append}`) : creator(str);
+
+  expect(c.chain(chainedConcat('Append')).chain(chainedConcat('Me'))).toEqual(
+    c.chain(x => chainedConcat('Append')(x).chain(chainedConcat('Me')))
+  );
+};
+
 export const ofEqualsConstructor = (
   staticSpace: Applicative,
   classConstructor: any
@@ -75,6 +84,12 @@ export const isFunctor = (functor: Functor<any>) => {
 export const isApply = (creator: any, apply: Apply<any>) => {
   it('should implement ap function', () => apExists(apply));
   it('should follow composition rule', () => apComposition(creator, apply));
+};
+
+export const isChain = (creator: any, chain: Chain<any>) => {
+  it('should implement chain function', () => chainExists(chain));
+  it('should follow associativity rule', () =>
+    chainAssociativity(creator, chain));
 };
 
 export const isApplicative = (
