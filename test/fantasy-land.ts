@@ -4,7 +4,7 @@ import {
   Chain,
   Applicative,
   Monoid,
-} from '../src/monads/FantasyLand';
+} from '../src/monads/_FantasyLand';
 
 // Random test functions for compositions
 const toString = (x: any): string => x.toString();
@@ -22,7 +22,7 @@ export const constructorExists = (method: string) => (x: any) =>
   expect(x[method]('testValue')).toHaveProperty('constructor');
 
 export const mapIdentity = (f: Functor<any>) =>
-  expect(f.map(x => x)).toEqual(f);
+  expect(f.map((x: any) => x)).toEqual(f);
 
 export const mapComposition = (f: Functor<any>) =>
   expect(f.map((x: any) => concatTest(toString(x)))).toEqual(
@@ -43,7 +43,7 @@ export const chainAssociativity = (creator: any, c: Chain<any>) => {
     append.length > 0 ? creator(`${str} ${append}`) : creator(str);
 
   expect(c.chain(chainedConcat('Append')).chain(chainedConcat('Me'))).toEqual(
-    c.chain(x => chainedConcat('Append')(x).chain(chainedConcat('Me')))
+    c.chain((x: any) => chainedConcat('Append')(x).chain(chainedConcat('Me')))
   );
 };
 
@@ -51,7 +51,7 @@ export const ofEqualsConstructor = (
   staticSpace: Applicative,
   classConstructor: any
 ) => {
-  const applicative = staticSpace.of(10);
+  const applicative: any = staticSpace.of(10);
   expect(classInstance(staticSpace.of(10))).toEqual(
     classInstance(new classConstructor(10))
   );
@@ -65,7 +65,7 @@ export const emptyEqualsConstructor = (
   staticSpace: Monoid,
   emptyConstructor: any
 ) => {
-  const applicative = staticSpace.empty();
+  const applicative: any = staticSpace.empty();
   expect(classInstance(staticSpace.empty())).toEqual(
     classInstance(new emptyConstructor())
   );
