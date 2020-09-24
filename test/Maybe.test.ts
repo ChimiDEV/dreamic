@@ -9,7 +9,7 @@ import {
   isComonad,
   isSemigroup,
   isFilterable,
-} from './fantasy-land';
+} from './fantasyland';
 import { Just, Nothing } from '../src/monads/Maybe';
 
 describe('Monads/Maybe', () => {
