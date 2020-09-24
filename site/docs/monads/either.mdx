@@ -16,10 +16,10 @@ import TabItem from '@theme/TabItem';
 ## Overview 
 
 A `Either` can be assumed to be either a `Left (error)` or `Right (happy path)` value.
-If a **Either** is observed as **Left**, a processing function has resulted in an error and you can easily handle it without having to fear about crashing process, beacause of a thrown error.
+If a **Either** is observed as **Left**, a processing function has resulted in an error and you can easily handle it without having to fear about crashing process, because of a thrown error.
 
 The either monad abstracts away annoying try/catch blocks.
-While functions applying to **Right** will work as excpeted, a **Left** simply returns itself without invoking any unsafe operation.
+While functions applying to **Right** will work as excepted, a **Left** simply returns itself without invoking any unsafe operation.
 Since the error is carried on you can inspect the problem at the end of the process pipeline, while still failing as fast as possible.
 
 ```ts
