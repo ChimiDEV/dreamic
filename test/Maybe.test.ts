@@ -5,6 +5,10 @@ import {
   isChain,
   isApplicative,
   isMonoid,
+  isExtend,
+  isComonad,
+  isSemigroup,
+  isFilterable,
 } from './fantasy-land';
 import { Just, Nothing } from '../src/monads/Maybe';
 
@@ -40,7 +44,39 @@ describe('Monads/Maybe', () => {
       describe('Maybe.of', () => isChain(maybe.of, ofMaybe));
     });
 
+    describe('Extend', () => {
+      describe('Factory: Just', () => isExtend(just));
+      describe('Factory: Nothing', () => isExtend(nothing));
+      describe('Factory: Maybe', () => isExtend(factoryMaybe));
+      describe('Maybe.of', () => isExtend(ofMaybe));
+    });
+
+    describe('Comonad', () => {
+      describe('Factory: Just', () => isComonad(just));
+      describe('Factory: Nothing', () => isComonad(nothing));
+      describe('Factory: Maybe', () => isComonad(factoryMaybe));
+      describe('Maybe.of', () => isComonad(ofMaybe));
+    });
+
+    describe('Semigroup', () => {
+      describe('Factory: Just', () => isSemigroup(fJust, just));
+      describe('Factory: Nothing', () =>
+        isSemigroup(fNothing, (nothing as unknown) as Maybe<any>));
+      describe('Factory: Maybe', () =>
+        isSemigroup((v: any) => fMaybe('ignored', v), factoryMaybe));
+      describe('Maybe.of', () => isSemigroup(maybe.of, ofMaybe));
+    });
+
+    describe.only('Filterable', () => {
+      describe('Factory: Just', () => isFilterable(fJust, just));
+      describe('Factory: Nothing', () =>
+        isFilterable(fNothing, (nothing as unknown) as Maybe<any>));
+      describe('Factory: Maybe', () =>
+        isFilterable((v: any) => fMaybe('ignored', v), factoryMaybe));
+      describe('Maybe.of', () => isFilterable(maybe.of, ofMaybe));
+    });
+
     describe('Applicative', () => isApplicative(maybe, Just));
-    describe('Monoid', () => isMonoid(maybe, Nothing));
+    describe('Monoid', () => isMonoid(maybe, maybe.of, Nothing));
   });
 });

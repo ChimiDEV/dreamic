@@ -1,9 +1,30 @@
 import _ from 'lodash/fp';
 import chalk from 'chalk';
 import { Value, inspect, inspectFn } from '../core/Value';
-import { Applicative, Monoid, Monad } from './_FantasyLand';
+import {
+  Applicative,
+  Monoid,
+  Monad,
+  Comonad,
+  Semigroup,
+  Filterable,
+} from './_FantasyLand';
 import { MonadTag, MonadType } from './_Monads';
 
+/*
+ * Maybe conforms following specifications:
+ *
+ * - Functor
+ * - Apply
+ * - Applicative
+ * - Chain
+ * - **Monad**
+ * - Extend
+ * - **Comonad**
+ * - Semigroup
+ * - **Monoid**
+ * - **Filterable**
+ */
 export type Maybe<T> = Just<T> | Nothing<T>;
 
 export interface MaybeStatic extends Applicative, Monoid {
@@ -16,7 +37,8 @@ export const maybe: MaybeStatic = {
   empty: (): Maybe<never> => fNothing(),
 };
 
-export class Just<T> implements Value, Monad<T> {
+export class Just<T>
+  implements Value, Monad<T>, Comonad<T>, Semigroup<T>, Filterable<T> {
   private $value: T;
   public $tag: MonadTag;
   public $type: MonadType;
@@ -58,6 +80,35 @@ export class Just<T> implements Value, Monad<T> {
     return chained;
   }
 
+  filter(predicate: (value: T) => boolean): Maybe<T> {
+    if (!predicate(this.$value)) {
+      return fNothing();
+    }
+
+    return this;
+  }
+
+  concat(maybe: Maybe<T>): Maybe<T> {
+    if (maybe.isNothing()) {
+      return this;
+    }
+
+    const value = maybe.extract();
+    if (_.isPlainObject(this.$value) && _.isPlainObject(value)) {
+      return fJust({ ...value, ...this.$value });
+    }
+
+    if (_.isString(this.$value) && _.isString(value)) {
+      return (fJust(this.$value.concat(value)) as unknown) as Maybe<T>;
+    }
+
+    if (_.isNumber(this.$value) && _.isNumber(value)) {
+      return (fJust(this.$value + value) as unknown) as Maybe<T>;
+    }
+
+    return fNothing();
+  }
+
   extend<U>(fn: (value: Maybe<T>) => U): Maybe<U> {
     const extended = fn(this);
     if (extended === undefined) {
@@ -67,16 +118,13 @@ export class Just<T> implements Value, Monad<T> {
     return maybe.of<U>(extended);
   }
 
-  // Comonad
   extract(): T {
     return this.$value;
   }
 
-  // Filterable
-
   toString(): string {
     return chalk`{bold Maybe}.{underline.magenta Just}(${inspectFn(
-      this.$value
+      this.$value,
     )})`;
   }
 
@@ -85,7 +133,8 @@ export class Just<T> implements Value, Monad<T> {
   }
 }
 
-export class Nothing<T> implements Value, Monad<T> {
+export class Nothing<T>
+  implements Value, Monad<T>, Comonad<T>, Semigroup<T>, Filterable<T> {
   public $tag: MonadTag;
   public $type: MonadType;
 
@@ -103,23 +152,37 @@ export class Nothing<T> implements Value, Monad<T> {
   }
 
   map<U>(fn: (value: T) => U): Maybe<U> {
-    return fNothing() as Nothing<U>;
+    return fNothing();
   }
 
   ap<U>(a: Maybe<(value: T) => U>): Maybe<U> {
-    return fNothing() as Nothing<U>;
+    return fNothing();
   }
 
   chain<U>(fn: (value: T) => Maybe<U>): Maybe<U> {
-    return fNothing() as Nothing<U>;
+    return fNothing();
   }
 
-  toString(): string {
-    return chalk`{bold Maybe}.{underline.yellow Nothing}()`;
+  filter(predicate: (value: T) => boolean): Maybe<T> {
+    return fNothing();
+  }
+
+  concat(maybe: Maybe<T>): Maybe<T> {
+    // If you concat a Maybe(Nothing) with an another Maybe that is not empty, you'll receive just the given Maybe.
+    // Just like 0 + 1 === 1.
+    return maybe.isNothing() ? fNothing() : maybe;
+  }
+
+  extend<U>(fn: (value: Maybe<T>) => U): Maybe<U> {
+    return fNothing();
   }
 
   extract(): T {
     return (undefined as unknown) as T;
+  }
+
+  toString(): string {
+    return chalk`{bold Maybe}.{underline.yellow Nothing}()`;
   }
 
   [inspect](): string {

@@ -12,6 +12,22 @@ export type Chain<T> = Apply<T> & {
 
 export type Monad<T> = Chain<T>; // Also should implement Applicative, but not able to represent via TS
 
+export type Extend<T> = Functor<T> & {
+  extend<U>(fn: (extend: Extend<T>) => U): Extend<U>;
+};
+
+export type Comonad<T> = Extend<T> & {
+  extract(): T;
+};
+
+export type Semigroup<T> = {
+  concat(semigroup: Semigroup<T>): Semigroup<T>;
+};
+
+export type Filterable<T> = {
+  filter(predicate: (value: T) => boolean): Filterable<T>;
+};
+
 /*
  * Usually these types below would have to implement other types as well.
  * Since there are some limitations by TS, we cannot define static methods on a type together with its instance methods.
