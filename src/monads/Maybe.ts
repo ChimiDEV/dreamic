@@ -2,17 +2,13 @@ import _ from 'lodash/fp';
 import chalk from 'chalk';
 import { Value, inspect, inspectFn } from '../core/Value';
 import { Applicative, Monoid, Monad } from './_FantasyLand';
+import { MonadTag, MonadType } from './_Monads';
 
 export type Maybe<T> = Just<T> | Nothing<T>;
 
 export interface MaybeStatic extends Applicative, Monoid {
   of<T>(value: T): Maybe<T>;
   empty(): Maybe<never>;
-}
-
-export enum MaybeTypeEnum {
-  Just = 'Maybe(Just)',
-  Nothing = 'Maybe(Nothing)',
 }
 
 export const maybe: MaybeStatic = {
@@ -22,13 +18,13 @@ export const maybe: MaybeStatic = {
 
 export class Just<T> implements Value, Monad<T> {
   private $value: T;
-  public $tag: string;
-  public $type: MaybeTypeEnum;
+  public $tag: MonadTag;
+  public $type: MonadType;
 
   constructor(value: T) {
     this.$value = value;
-    this.$tag = 'Just';
-    this.$type = MaybeTypeEnum.Just;
+    this.$tag = MonadTag.Just;
+    this.$type = MonadType.Just;
   }
 
   isNothing(): boolean {
@@ -90,12 +86,12 @@ export class Just<T> implements Value, Monad<T> {
 }
 
 export class Nothing<T> implements Value, Monad<T> {
-  public $tag: string;
-  public $type: MaybeTypeEnum;
+  public $tag: MonadTag;
+  public $type: MonadType;
 
   constructor() {
-    this.$tag = 'Nothing';
-    this.$type = MaybeTypeEnum.Nothing;
+    this.$tag = MonadTag.Nothing;
+    this.$type = MonadType.Nothing;
   }
 
   isNothing(): boolean {

@@ -10,6 +10,8 @@ import {
 } from './monads';
 
 export {
+  MonadTag,
+  MonadType,
   Maybe,
   maybe,
   fMaybe,
