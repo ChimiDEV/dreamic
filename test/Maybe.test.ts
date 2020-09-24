@@ -67,7 +67,7 @@ describe('Monads/Maybe', () => {
       describe('Maybe.of', () => isSemigroup(maybe.of, ofMaybe));
     });
 
-    describe.only('Filterable', () => {
+    describe('Filterable', () => {
       describe('Factory: Just', () => isFilterable(fJust, just));
       describe('Factory: Nothing', () =>
         isFilterable(fNothing, (nothing as unknown) as Maybe<any>));
