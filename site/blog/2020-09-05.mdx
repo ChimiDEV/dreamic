@@ -1,0 +1,132 @@
+---
+title: Me, Myself and Monads
+author: Tim Walter <ChimiDEV>
+author_title: Maintainer
+author_url: https://github.com/ChimiDEV
+author_image_url: https://avatars1.githubusercontent.com/u/15871426
+tags: [monads, functional programming, fantasy-land]
+---
+
+## Motivation
+
+Since this is the first blog entry, let me describe my motivation behind this project.  
+While getting more and more into functional programming, I stumbled across `Fantasy-Land` aka. the "Algebraic JavaScript Specification".  
+At First I was pretty skeptical. Almost overwhelmed.
+Additionally I didn't see the need at the time I've seen algebraic javascript types first.
+Hence the reason I parked the idea in the depths of my brain and forgot about it.
+
+However, in the recent past I was more inclined by the idea of monads.
+Finally I decided to come to peace with the fantasy-land specification.
+It did take some time to study the fundaments of it, but I started trying to use it in may daily life as software engineer.  
+The result: today I don't want to miss those types anymore.
+
+## Quick Introduction to Monads
+
+Instead of starting with lots of confusing and abstract definitions and reasons what a monad is and why one should use it,
+let me introduce you to monads the practical way.
+
+Think about `Monads` like a `Container` that can carry a value.
+You can transform, handle and change that value in this container, but you might need to inspect (called `join` or `extract`) it at the end.  
+You now will think _"Why should I want to encapsulate any of my values in such a construct?"_.  
+**Simply said: To keep it pure.**
+
+Imagine a function that does something "dangerous", e.g. retrieving a value from the user or parsing dynamic data.
+
+```js
+const parseSomething = x => {
+  const tmp = JSON.parse(x);
+  const expectedObj = dangerousParsing(tmp);
+  return expectedObj.thatArrayShouldExist;
+};
+
+const data = parseSomething("{I'm not valid}");
+data.usefulData.map(/*...*/);
+// Process will crash.
+```
+
+Now one could start adding error handling inside the `parseSomething`.  
+Let's say we're smart and do not want to throw any errors, since this will crash the process.
+Instead we return `null`.
+
+```js
+parseSomething = x => {
+  let tmp;
+  try {
+    tmp = JSON.parse(x);
+  } catch (err) {
+    return null;
+  }
+
+  let expectedObj;
+  try {
+    expectedObj = dangerousParsing(tmp);
+  } catch (err) {
+    return null;
+  }
+
+  return (expectedObj || {}).thatArrayShouldExist || null;
+};
+
+const data = parseSomething("{I'm not valid}");
+// highlight-next-line
+data.usefulData.map(/*...*/);
+// Process might still crash.
+```
+
+Quite cumbersome (obviously I made it even more extreme as needed, but you get the idea).
+However, we introduced even more problems.  
+First of all we do return different **Types**: null or the successful parsed value.  
+This is quite a problem, when we look above (highlighted line), the process will still crash.
+Also we lose a lot of readability.
+
+Let me introduce you `Maybe`.
+Maybe is a monad, that either contains a value (often referred as `Just`) or simply `Nothing`.
+
+Before we refactor our code, let's explain some methods a monad does come with.
+
+- **map**: You might know _map_ from an array. This function accepts a function and will return the same monad with the transformed value using the supplied function.
+- **ap**: Use this to apply a monad to another monad. The given monad holds a function as value, which will be used on the applied monad's value.
+- **chain**: Chain is especially useful, when handling a function that again returns the same monad.
+  Why? Using a `.map` in this case would result in a `Maybe(Maybe(value))`. Not very convenient.
+- **join or extract**: Use join to finally inspect the value of a monad.
+
+Additional some hints, what a **Maybe** monad makes it special: Using a **Maybe** any operation will only be invoked, if the containing value **is not Nothing.**  
+Now that you got some insights, what a monad comes with, see the refactored function from above:
+
+```js
+const parseSomething = x =>
+  Maybe.of(x)
+    .map(safeJsonParse)
+    .chain(dangerousParsing) // dangerousParsing now returns a Maybe as well
+    .map(safeGet('thatArrayShouldExist'));
+
+// getOrElse is a method, that either returns your Maybe's value or the given default value.
+parseSomething("{I'm not valid}")
+  .getOrElse([])
+  .map(/*...*/);
+```
+
+Much better right? Now lets even go further and remove any dot notation.
+
+```js
+const parseSomething = _.pipe(
+  Maybe.of,
+  map(safeJsonParse),
+  chain(dangerousParsing),
+  map(safeGet('thatArrayShouldExist'))
+);
+
+const transformParsed = transformer =>
+  _.pipe(parseSomething, getOrElse([]), map(transformer));
+```
+
+Hopefully that gave you a simple introduction what monads are made of. I'll attach some references for a even more detailed (and sometimes even more confusing) explanations.
+
+### References
+
+- [My personal must read: Mostly Adequate Guide to Functional Programming (Chapter 8 if you looking for monads)](https://mostly-adequate.gitbooks.io/mostly-adequate-guide/content/)
+- [Mysterious Maybe Monad](https://jrsinclair.com/articles/2016/marvellously-mysterious-javascript-maybe-monad/)
+- [JS Monads Made Simple](https://medium.com/javascript-scene/javascript-monads-made-simple-7856be57bfe8)
+- [Expressive Monads in JS](https://dev.to/rgeraldporter/building-expressive-monads-in-javascript-introduction-23b)
+- [Elegant Error Handling with the Either Monad](https://blog.logrocket.com/elegant-error-handling-with-the-javascript-either-monad-76c7ae4924a1/)
+- [Fantasy Land](https://github.com/fantasyland/fantasy-land)

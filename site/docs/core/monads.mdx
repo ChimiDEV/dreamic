@@ -1,0 +1,358 @@
+---
+id: monads
+title: Dreamic Types
+sidebar_label: Dreamic Types
+---
+
+import DarkModeImage from '../../src/components/DarkModeImage.js';
+
+## Fantasy-Land Types
+
+<DarkModeImage
+  darkMode="img/docs/core/fantasyland_dark.svg"
+  lightMode="img/docs/core/fantasyland.svg"
+/>
+
+## Dreamic Types
+
+### Compatibility Table
+
+<table>
+  <tr>
+    <th></th>
+    <th>Maybe</th>
+    <th>Either</th>
+    <th>Validation</th>
+    <th>Future</th>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#setoid"
+        target="_blank"
+      >
+        Setoid
+      </a>
+    </td>
+    <td typeid="Maybe">✔️</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/fantasyland/fantasy-land#ord" target="_blank">
+        Ord
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#semigroupoid"
+        target="_blank"
+      >
+        Semigroupoid
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#category"
+        target="_blank"
+      >
+        Category
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#semigroup"
+        target="_blank"
+      >
+        Semigroup
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#monoid"
+        target="_blank"
+      >
+        Monoid
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#group"
+        target="_blank"
+      >
+        Group
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#filterable"
+        target="_blank"
+      >
+        Filterable
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#functor"
+        target="_blank"
+      >
+        Functor
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#contravariant"
+        target="_blank"
+      >
+        Contravariant
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#apply"
+        target="_blank"
+      >
+        Apply
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#applicative"
+        target="_blank"
+      >
+        Applicative
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/fantasyland/fantasy-land#alt" target="_blank">
+        Alt
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#plus"
+        target="_blank"
+      >
+        Plus
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#alternative"
+        target="_blank"
+      >
+        Alternative
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#foldable"
+        target="_blank"
+      >
+        Foldable
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#traversable"
+        target="_blank"
+      >
+        Traversable
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#chain"
+        target="_blank"
+      >
+        Chain
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#chainRec"
+        target="_blank"
+      >
+        ChainRec
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#monad"
+        target="_blank"
+      >
+        Monad
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#extend"
+        target="_blank"
+      >
+        Extend
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#comonad"
+        target="_blank"
+      >
+        Comonad
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#bifunctor"
+        target="_blank"
+      >
+        Bifunctor
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+  <tr>
+    <td>
+      <a
+        href="https://github.com/fantasyland/fantasy-land#profunctor"
+        target="_blank"
+      >
+        Profunctor
+      </a>
+    </td>
+    <td typeid="Maybe">❌</td>
+    <td typeid="Either">❌</td>
+    <td typeid="Validation">❌</td>
+    <td typeid="Future">❌</td>
+  </tr>
+</table>

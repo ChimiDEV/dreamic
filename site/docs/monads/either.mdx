@@ -1,0 +1,86 @@
+---
+id: either
+title: Either
+sidebar_label: Either
+---
+
+import DarkModeImage from '../../src/components/DarkModeImage.js';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<DarkModeImage
+  lightMode="img/docs/monads/tagline_either.svg"
+  darkMode="img/docs/monads/tagline_either_dark.svg"
+/>
+
+## Overview 
+
+A `Either` can be assumed to be either a `Left (error)` or `Right (happy path)` value.
+If a **Either** is observed as **Left**, a processing function has resulted in an error and you can easily handle it without having to fear about crashing process, because of a thrown error.
+
+The either monad abstracts away annoying try/catch blocks.
+While functions applying to **Right** will work as excepted, a **Left** simply returns itself without invoking any unsafe operation.
+Since the error is carried on you can inspect the problem at the end of the process pipeline, while still failing as fast as possible.
+
+```ts
+import { Either } from '@chimidev/dreamic';
+
+Either.of<string>('12').map(parseInt); // Either.Right(12)
+Either.of<string>('unparsable').map(parseInt); // Either.Left(ParserError) - No error is thrown
+```
+
+## Comparison: Dreamic vs Vanilla
+
+<Tabs
+  defaultValue="vanilla"
+  values={[
+    {label: 'Vanilla', value: 'vanilla'},
+    {label: 'Dreamic', value: 'dreamic'}
+  ]}>
+
+<TabItem value="vanilla">
+
+```js
+const unsafeProcess = () => {
+  try {
+    const unsafeValue = mightTrow();
+    return unsafeValue;
+  } catch(err) {
+    handleError(err);
+    return;
+  }
+}
+```
+
+</TabItem>
+
+<TabItem value="dreamic">
+
+```js
+Either
+  .encase(unsafeProcess)
+  .either(handleError, onSuccess)
+
+// Point Free
+pipe(
+  encase(Either),
+  either(handleError, onSuccess)
+)(unsafeProcess);
+```
+
+</TabItem>
+</Tabs>
+
+## Interface
+
+### Either.of
+
+`of:: a -> Either e a`
+
+### Either#map
+
+`map:: Either e a ~> (a -> b) -> Maybe e b`
+
+### Either#ap
+
+`ap:: Either e a ~> Either e (a -> b) -> Either e b`

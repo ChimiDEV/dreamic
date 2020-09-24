@@ -1,0 +1,98 @@
+---
+id: maybe
+title: Maybe
+sidebar_label: Maybe
+---
+
+import DarkModeImage from '../../src/components/DarkModeImage.js';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<DarkModeImage
+  lightMode="img/docs/monads/tagline_maybe.svg"
+  darkMode="img/docs/monads/tagline_maybe_dark.svg"
+/>
+
+## Overview
+
+This monad is helpful, if you are working with values that might not exist _or_ result into a non existing value while processing them.  
+A `Maybe` is either `Just` the value or simply `Nothing`.
+
+The maybe monad abstracts away annoying type guards or defensive `if` statements.
+While **Just** will work as excepted, a **Nothing** simply returns itself without invoking any unsafe operation.
+For example, if you try to map the value from a string to a number, this operation will only happen, if the respective value is a **Just**.
+
+```ts
+import { Maybe } from '@chimidev/dreamic';
+
+Maybe.of<string>('12').map(parseInt); // Maybe.Just(12)
+Maybe.empty().map(parseInt); // Maybe.Nothing() - No error is thrown
+```
+
+## Comparison: Dreamic vs Vanilla
+
+<Tabs
+  defaultValue="defensive"
+  values={[
+    {label: 'Vanilla: Defensive', value: 'defensive'},
+    {label: 'Vanilla: Default', value: 'default'},
+    {label: 'Dreamic', value: 'dreamic'}
+  ]}>
+
+<TabItem value="defensive">
+
+```js
+const defensive = () => {
+  const optionalValue = mightBeUndefined();
+
+  // highlight-start
+  if(!optionalValue) {
+    return;
+  }
+  // highlight-end
+
+  return process(optionalValue);
+}
+```
+
+</TabItem>
+
+<TabItem value="default">
+
+```js
+  const defaultValue = mightBeUndefined() || {defaultValue: true};
+```
+</TabItem>
+
+<TabItem value="dreamic">
+
+```js
+Maybe
+  .fromNullable(optionalValue)
+  .map(process)
+  .getOr('Default Value');
+
+// Point Free
+pipe(
+  fromNullable,
+  map(process),
+  getOr('Default Value'),
+)(optionalValue);
+```
+
+</TabItem>
+</Tabs>
+
+## Interface
+
+### Maybe.of
+
+`of:: a -> Maybe a`
+
+### Maybe#map
+
+`map:: Maybe a ~> (a -> b) -> Maybe b`
+
+### Maybe#ap
+
+`ap:: Maybe a ~> Maybe (a -> b) -> Maybe b`
