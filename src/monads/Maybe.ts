@@ -1,18 +1,23 @@
 import _ from 'lodash/fp';
 import chalk from 'chalk';
 import { Value, inspect, inspectFn } from '../core/Value';
-import { Applicative, Monoid, Monad } from './FantasyLand';
+import { Applicative, Monoid, Monad } from './_FantasyLand';
 
 export type Maybe<T> = Just<T> | Nothing<T>;
+
+export interface MaybeStatic extends Applicative, Monoid {
+  of<T>(value: T): Maybe<T>;
+  empty(): Maybe<never>;
+}
 
 export enum MaybeTypeEnum {
   Just = 'Maybe(Just)',
   Nothing = 'Maybe(Nothing)',
 }
 
-export const maybe: Applicative & Monoid = {
-  of: <T>(value: T): Maybe<T> => new Just(value) as Maybe<T>,
-  empty: <T>(): Maybe<T> => fNothing() as Nothing<T>,
+export const maybe: MaybeStatic = {
+  of: <T>(value: T): Maybe<T> => new Just(value),
+  empty: (): Maybe<never> => fNothing(),
 };
 
 export class Just<T> implements Value, Monad<T> {
@@ -57,11 +62,21 @@ export class Just<T> implements Value, Monad<T> {
     return chained;
   }
 
-  extend<U>(): Maybe<U> {}
+  extend<U>(fn: (value: Maybe<T>) => U): Maybe<U> {
+    const extended = fn(this);
+    if (extended === undefined) {
+      return fNothing();
+    }
 
+    return maybe.of<U>(extended);
+  }
+
+  // Comonad
   extract(): T {
     return this.$value;
   }
+
+  // Filterable
 
   toString(): string {
     return chalk`{bold Maybe}.{underline.magenta Just}(${inspectFn(

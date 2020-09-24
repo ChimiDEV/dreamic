@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { Value, inspect, inspectFn } from '../core/Value';
-import { Functor, Applicative } from './FantasyLand';
+import { Functor, Applicative } from './_FantasyLand';
 
 type EitherApplicative = Applicative & {
   of<L extends Error, R>(v: R): any;

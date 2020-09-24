@@ -15,11 +15,13 @@ export type Monad<T> = Chain<T>; // Also should implement Applicative, but not a
 /*
  * Usually these types below would have to implement other types as well.
  * Since there are some limitations by TS, we cannot define static methods on a type together with its instance methods.
+ *
+ * Also those interfaces may have to be overwritten by the specific monad.
  */
 export type Applicative = {
-  of<T>(value: T): any;
+  of<T>(value: T): unknown;
 };
 
 export type Monoid = {
-  empty(): any;
+  empty(): unknown;
 };
