@@ -1,8 +1,8 @@
 import {
   maybe,
+  fMaybe,
   fJust,
   fNothing,
-  fMaybe,
   either,
   fLeft,
   fRight,
@@ -11,6 +11,8 @@ import {
 
 export {
   Maybe,
+  maybe,
+  fMaybe,
   fJust,
   fNothing,
   Either,
@@ -21,9 +23,9 @@ export {
 
 export default {
   maybe,
+  fMaybe,
   fJust,
   fNothing,
-  fMaybe,
   either,
   fLeft,
   fRight,
