@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{62:function(a){a.exports=JSON.parse('{"allTagsPath":"/dreamic/blog/tags","slug":"functional-programming","name":"functional programming","count":1,"permalink":"/dreamic/blog/tags/functional-programming"}')}}]);
