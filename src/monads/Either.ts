@@ -64,7 +64,7 @@ export class Right<L extends Error, R> implements Value, Functor<R> {
 
   toString(): string {
     return chalk`{bold Either}.{underline.green Left}(${inspectFn(
-      this.$value
+      this.$value,
     )})`;
   }
 
