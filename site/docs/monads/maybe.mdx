@@ -23,10 +23,10 @@ While **Just** will work as excepted, a **Nothing** simply returns itself withou
 For example, if you try to map the value from a string to a number, this operation will only happen, if the respective value is a **Just**.
 
 ```ts
-import { Maybe } from '@chimidev/dreamic';
+import { maybe } from '@chimidev/dreamic';
 
-Maybe.of<string>('12').map(parseInt); // Maybe.Just(12)
-Maybe.empty().map(parseInt); // Maybe.Nothing() - No error is thrown
+maybe.of<string>('12').map(parseInt); // Maybe.Just(12)
+maybe.empty().map(parseInt); // Maybe.Nothing() - No error is thrown
 ```
 
 ## Comparison: Dreamic vs Vanilla
@@ -67,7 +67,7 @@ const defensive = () => {
 <TabItem value="dreamic">
 
 ```js
-Maybe
+maybe
   .fromNullable(optionalValue)
   .map(process)
   .getOr('Default Value');
@@ -83,16 +83,434 @@ pipe(
 </TabItem>
 </Tabs>
 
-## Interface
+## Factories
+
+### fJust
+**Type Annotations**  
+`fJust:: a -> Maybe a`  
+`<T>(value: T) => Maybe<T>`
+
+Accepts any value and returns it inside a `Maybe` as `Just`.
+
+| Parameter | Type | Description|
+| --- | --- | ---|
+|`value`| T (Generic) | Value the `Maybe` should contain. | 
+
+```ts
+import { fJust } from '@chimidev/dreamic';
+
+fJust(10); // Maybe.Just(10)
+fJust<CustomType>(CustomTypeInstance); // Maybe.Just(CustomTypeInstance)
+```
+
+---
+
+### fNothing
+**Type Annotations**  
+`fNothing:: Nothing a => () -> Maybe a`  
+`() => Maybe<never>`
+
+Used to create an empty `Maybe`. Will contain `Nothing`.
+
+```ts
+import { fNothing } from '@chimidev/dreamic';
+
+fNothing(); // Maybe.Nothing()
+```
+
+---
+
+### fMaybe
+**Type Annotations**  
+`fMaybe:: a -> a -> Maybe a`  
+`<T>(defaultValue: T, value: T) => Maybe<T>`
+
+Constructs a `Maybe` with either a value or its given default.  
+Accepts a default value and a value. If value equals `undefined`, the default value will be used.
+
+| Parameter | Type | Description|
+| --- | --- | ---|
+|`defaultValue`| T (Generic) | Value the `Maybe` should contain, if `value` is `undefined`. | 
+|`value`| T (Generic) | Value the `Maybe` should contain. | 
+
+
+```ts
+import { fMaybe } from '@chimidev/dreamic';
+
+fMaybe(10, 20); // Maybe.Just(20)
+fMaybe(10, aUndefinedVar); // Maybe.Just(10)
+```
+
+---
+
+## Static Functions
 
 ### Maybe.of
+**Type Annotations**  
+`of:: a -> Maybe a`  
+`of<T>(value: T) => Maybe<T>`
 
-`of:: a -> Maybe a`
+Used to create a `Maybe` with `Just` the given value.
+Works like `fJust()`.
+
+| Parameter | Type | Description|
+| --- | --- | ---|
+|`value`| T (Generic) | Value the `Maybe` should contain. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+maybe.of(10) // Maybe.Just(10)
+maybe.of<CustomType>(CustomTypeInstance) // Maybe.Just(CustomTypeInstance)
+```
+
+---
+
+### Maybe.empty
+**Type Annotations**  
+`empty:: () -> Maybe a`  
+`() => Maybe<never>`
+
+Used to create an empty `Maybe`. Will contain `Nothing`.
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+maybe.empty() // Maybe.Nothing()
+```
+
+---
+
+## Methods
+
+### Maybe#isJust
+**Type Annotations**  
+`isJust:: Maybe a ~> () -> boolean`  
+`() => boolean`
+
+Checks if a `Maybe` contains `Just` a value.
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+const anotherMaybe = maybe.empty();
+
+aMaybe.isJust(); // true
+anotherMaybe.isJust() // false
+```
+
+---
+
+### Maybe#isNothing
+**Type Annotations**  
+`isNothing:: Maybe a ~> () -> boolean`  
+`() => boolean`
+
+Checks if a `Maybe` contains `Nothing`.
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+const anotherMaybe = maybe.empty();
+
+aMaybe.isNothing(); // false
+anotherMaybe.isNothing() // true
+```
+
+---
 
 ### Maybe#map
+**Type Annotations**  
+`map:: Maybe a ~> (a -> b) -> Maybe b`   
+`<U>(fn: (value: T) => U) => Maybe<U>`
 
-`map:: Maybe a ~> (a -> b) -> Maybe b`
+This method applies a given function to the `Maybe`'s value.
+If the value is `Nothing`, the function will not be invoked.  
+Returns a new `Maybe` instance with the result of `fn(maybeValue)` or `Nothing`.
+
+Following rules are imposed by fantasy-land:
+- `fn` has to be a function. If `fn` is not an function, the method's behavior is **unspecified**.
+- `fn` can return any value.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`fn`| function | Mapping function.<br/>Is invoked with the value of the `Maybe`.<br/>Return value is used as new monad value. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+
+aMaybe.map(x => x * 2); // Maybe.Just(20)
+```
+
+---
 
 ### Maybe#ap
+**Type Annotations**  
+`ap:: Maybe a ~> Maybe (a -> b) -> Maybe b`  
+`<U>(maybe: Maybe<(value: T) => U>) => Maybe<U>`
 
-`ap:: Maybe a ~> Maybe (a -> b) -> Maybe b`
+Applies the function containing in the given `Maybe` to the value of the used `Maybe`, returning a `Maybe` of the result.  
+If either of the both are `Nothing`, the result will be `Nothing`.
+
+Following rules are imposed by fantasy-land:
+- If the given `Maybe` does not contain any function, the behavior is **unspecified**.
+- The `Apply` parameter must be of the same type as the Monad, i.e. in this case a `Maybe`.
+- The resulting Monad of `ap` must be of the same type, i.e. in this case a `Maybe`.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`maybe`| Maybe | A `Maybe` containg the function, that applies to the value. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+const applyMaybe = maybe.of((x: number) => x * 2);
+
+aMaybe.ap(applyMaybe); // Maybe.Just(20)
+```
+
+---
+
+### Maybe#chain
+**Type Annotations**  
+`chain:: Maybe a ~> (a -> Maybe b) -> Maybe b`  
+`<U>(fn: (value: T) => Maybe<U>) => Maybe<U>`
+
+The chain method is the combination of `Maybe#map` and `Maybe#extract`.  
+It is used to prevent cases, which result in nested monads like for example `Maybe<Maybe<number>>`.
+
+Following rules are imposed by fantasy-land:
+- `fn` has to be a function. If `fn` is not an function, the method's behavior is **unspecified**.
+- `fn` has to return the same type as the `Chain`, i.e. in this case `Maybe`.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`fn`| function | Chaining function, which returns a `Maybe`.<br/>Will be invoked with the value of the `Maybe`. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+// Function that divides given numbers, but never by 0.
+// Will return the result nested in a Maybe.
+let safeDivision; // E.g. safeDivision(10, 0) -> Maybe.Nothing();
+const aMaybe = maybe.of(0);
+
+aMaybe.chain(safeDivision(10)); // Maybe.Nothing()
+```
+
+---
+
+### Maybe#filter
+**Type Annotations**  
+`filter:: Maybe a ~> (a -> Boolean) -> Maybe a`  
+`(predicate: (value: T) => boolean)) => Maybe<T>`
+
+Takes a predicate function and returns a `Maybe` with either the value (if the predicate returns true) or `Nothing`.
+
+Following rules are imposed by fantasy-land:
+- `predicate` has to be a function. If `predicate` is not an function, the method's behavior is **unspecified**.
+- `predicate` must either return true or false otherwise the behavior is **unspecified**.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`predicate`| function | If the function returns true, the value of the `Maybe` is kept.<br/> Otherwise the result will be `Nothing`. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+
+aMaybe.filter(x => x < 10); // Maybe.Nothing()
+aMaybe.filter(x => x >= 10); // Maybe.Just(10)
+```
+
+---
+
+### Maybe#concat
+**Type Annotations**  
+`concat:: Maybe a ~> Maybe a -> Maybe a`  
+`(maybe: Maybe<T>) => Maybe<T>`
+
+Accepts a `Maybe` and concat it with given `Maybe`.  
+Concatenation depends on the inherent type of the `Maybe`:
+- *number*: Addition is invoked
+- *object*: Objects are merged together (existing values are overwritten by incoming `Maybe`)
+- *string*: Strings are simply chained together
+
+Every other type (or uncompatible types) will result in a `Nothing` since there is no way to concat those values.  
+If you concat a `Nothing` with another Maybe that is not empty, you'll receive just the given Maybe.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`maybe`| Maybe | Instance to concat with. | 
+
+#### Example
+
+<Tabs
+  defaultValue="number"
+  values={[
+    {label: 'Numbers', value: 'number'},
+    {label: 'Strings', value: 'string'},
+    {label: 'Objects', value: 'object'},
+    {label: 'Empty', value: 'empty'}
+  ]}>
+
+<TabItem value="number">
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+
+aMaybe.concat(15); // Maybe.Just(25)
+aMaybe.concat('string'); // Maybe.Nothing()
+```
+
+</TabItem>
+
+<TabItem value="string">
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of('Hello ');
+
+aMaybe.concat('Developer'); // Maybe.Just('Hello Developer')
+aMaybe.concat(10); // Maybe.Nothing()
+```
+</TabItem>
+
+<TabItem value="object">
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of({aKey: 'aValue', anotherKey: false});
+
+aMaybe.concat({addedKey: 'addedValue', anotherKey: true});
+//    ^Maybe.Just({aKey: 'aValue',  anotherKey: true, addedKey: 'addedValue'})
+aMaybe.concat(10); // Maybe.Nothing()
+```
+
+</TabItem>
+
+<TabItem value="empty">
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of('string');
+const emptyMaybe = maybe.empty();
+const anotherMaybe = maybe.of(true);
+
+aMaybe.concat(maybe.empty()); // Maybe.Just('string')
+emptyMaybe.concat(aMaybe); // Maybe.Just('string')
+
+// Booleans are not concatable.
+anotherMaybe.concat(false); // Maybe.Nothing()
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+### Maybe#extend
+**Type Annotations**  
+`extend:: Maybe a ~> (Maybe a -> b) -> Maybe b`  
+`<U>(fn:(value: Maybe<T>) => U) => Maybe<U>`
+
+Given function will be invoked with the used `Maybe` (`this`). Think of a reversed `chain`.
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|`fn`| function | Invoked with used `Maybe (this)`.<br/>Return value is used as value of new container. | 
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of('string');
+
+aMaybe.extend(m => m.isJust() && 'new string'); // Maybe.Just('new string')
+```
+
+---
+
+### Maybe#extract
+**Type Annotations**  
+`join:: Maybe a ~> () -> a`  
+`() => T`
+
+Used to retrieve the value of the `Maybe` container.
+
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+
+aMaybe.extract(); // 10
+```
+
+---
+
+### Maybe#toString
+**Type Annotations**  
+`toString:: Maybe a ~> () -> b`  
+`() => string`
+
+Cast a monad to its string representation.  
+Only reason to use this would be while debugging an application.
+
+#### Example
+
+```ts
+import { maybe } from '@chimidev/dreamic';
+
+const aMaybe = maybe.of(10);
+
+console.log(aMaybe.toString())
+console.log(aMaybe) // Dreamic implements a `inspect` for its monads. Will invoke toString().
+```
+
+<!-- 
+### METHOD
+**Type Annotations**  
+``  
+``
+
+Description Block
+
+| Parameter | Type | Description |
+| --- | --- | ---|
+|``|  |  | 
+
+#### Example
+
+```ts
+``` -->
