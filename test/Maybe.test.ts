@@ -16,7 +16,7 @@ describe('Monads/Maybe', () => {
   describe('Fantasy-Land', () => {
     const just = fJust(12);
     const nothing = fNothing();
-    const factoryMaybe = fMaybe(10, 13) as Maybe<number>;
+    const factoryMaybe = fMaybe(10, 13);
     const ofMaybe = maybe.of(99);
 
     describe('Functor', () => {
@@ -78,5 +78,37 @@ describe('Monads/Maybe', () => {
 
     describe('Applicative', () => isApplicative(maybe, Just));
     describe('Monoid', () => isMonoid(maybe, maybe.of, Nothing));
+  });
+
+  describe('Maybe', () => {
+    it('should successfully create Maybe from nullable', () => {
+      expect(maybe.fromNullable(10)).toEqual(maybe.of(10));
+      expect(maybe.fromNullable(undefined)).toEqual(maybe.empty());
+    });
+
+    it('should successfully create Maybe with default', () => {
+      expect(maybe.withDefault(10, 15)).toEqual(maybe.of(15));
+      expect(maybe.withDefault(10, undefined)).toEqual(maybe.of(10));
+    });
+
+    it('should successfully encase throwing function', () => {
+      const notThrowing = () => 255;
+      const throwing = () => {
+        throw new Error('DUMMY');
+      };
+
+      expect(maybe.encase(notThrowing)).toEqual(maybe.of(255));
+      expect(maybe.encase(throwing)).toEqual(maybe.empty());
+    });
+
+    it('should get value, since maybe is not empty', () => {
+      const m = maybe.of(15);
+      expect(m.getOr<number>(20)).toEqual(15);
+    });
+
+    it('should get default value, since maybe is empty', () => {
+      const m = maybe.empty();
+      expect(m.getOr<number>(20)).toEqual(20);
+    });
   });
 });

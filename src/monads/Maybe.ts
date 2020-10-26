@@ -54,11 +54,58 @@ export interface MaybeStatic extends Applicative, Monoid {
    * @see {@link https://github.com/fantasyland/fantasy-land#fantasy-landempty-method|fantasy-land/empty}
    */
   empty(): Maybe<never>;
+
+  /**
+   * Create a `Maybe` from an optional value.\
+   * `Maybe` either contains the given `value` or simply `Nothing`.
+   *
+   * **Type Annotation**\
+   * `fromNullable:: a -> Maybe a`
+   *
+   * @param value Value that is put into the Maybe Monad
+   */
+  fromNullable<T>(value: T): Maybe<T>;
+
+  /**
+   * Construct a `Maybe` with `value` or given default, if `value` is `undefined`.
+   * Works just like the factory `fMaybe()`;
+   *
+   * **Type Annotation**\
+   * `withDefault:: a -> a -> Maybe a`
+   */
+  withDefault<T>(defaultValue: T, value: T): Maybe<T>;
+  withDefault<T>(defaultValue: T): (value: T) => Maybe<T>;
+
+  /**
+   * Accepts a throwing function and returns either a `Maybe` with `Nothing` (if function throws) or the return value of the function.
+   *
+   * **Type Annotation**\
+   * `encase:: (a -> b) -> Maybe b`
+   *
+   * @param throwable Function that may throw an error
+   */
+  encase<T>(throwable: () => T): Maybe<T>;
 }
 
 export const maybe: MaybeStatic = {
   of: <T>(value: T): Maybe<T> => new Just(value),
   empty: (): Maybe<never> => new Nothing(),
+
+  fromNullable: <T>(value: T): Maybe<T> =>
+    _.isUndefined(value) ? new Nothing() : new Just(value),
+
+  withDefault: _.curry(
+    <T>(defaultValue: T, value: T): Maybe<T> =>
+      maybe.of<T>(_.isUndefined(value) ? defaultValue : value),
+  ),
+
+  encase: <T>(throwable: () => T): Maybe<T> => {
+    try {
+      return new Just<T>(throwable());
+    } catch (ignore) {
+      return new Nothing();
+    }
+  },
 };
 
 /**
@@ -106,6 +153,16 @@ export class Just<T>
    */
   isJust(): boolean {
     return true;
+  }
+
+  /**
+   * Returns the containing value, if the `Maybe` is not `Nothing` otherwise, the given default value will be returned.
+   *
+   * **Type Annotation**\
+   * `getOr:: Maybe a ~> a -> Maybe a`
+   */
+  getOr<U>(defaultValue: U): T | U {
+    return _.isUndefined(this.$value) ? defaultValue : this.$value;
   }
 
   /**
@@ -312,6 +369,16 @@ export class Nothing<T>
   }
 
   /**
+   * Returns the containing value, if the `Maybe` is not `Nothing` otherwise, the given default value will be returned.
+   *
+   * **Type Annotation**\
+   * `getOr:: Maybe a ~> a -> Maybe a`
+   */
+  getOr<U>(defaultValue: U): T | U {
+    return defaultValue;
+  }
+
+  /**
    * This method applies a given function to the `Maybe`'s value.
    * If the value is nothing, the function will not be invoked.\
    * Returns a new `Maybe` Instance with the result of `fn(maybeValue)` or Maybe.Nothing.
@@ -472,7 +539,4 @@ export const fJust = <T>(value: T): Maybe<T> => maybe.of<T>(value);
  * **Type Annotation**\
  * `fMaybe:: a -> a -> Maybe a`
  */
-export const fMaybe = _.curry(
-  <T>(defaultValue: T, value: T): Maybe<T> =>
-    maybe.of<T>(_.isUndefined(value) ? defaultValue : value),
-);
+export const fMaybe = maybe.withDefault;
