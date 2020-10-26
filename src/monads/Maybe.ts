@@ -58,7 +58,7 @@ export interface MaybeStatic extends Applicative, Monoid {
 
 export const maybe: MaybeStatic = {
   of: <T>(value: T): Maybe<T> => new Just(value),
-  empty: (): Maybe<never> => fNothing(),
+  empty: (): Maybe<never> => new Nothing(),
 };
 
 /**
@@ -196,7 +196,6 @@ export class Just<T>
   }
 
   /**
-   *
    * Accepts a `Maybe` and concat it with given `Maybe`.
    * Concatenation depends on the inherent type:
    * - *number*: Addition is invoked
@@ -233,7 +232,6 @@ export class Just<T>
   }
 
   /**
-   *
    * Given function will be invoked with `this` Maybe.
    * Think of a reversed `chain`.
    *
@@ -386,7 +384,6 @@ export class Nothing<T>
   }
 
   /**
-   *
    * Accepts a `Maybe` and concat it with given `Maybe`.
    * Concatenation depends on the inherent type:
    * - *number*: Addition is invoked
@@ -450,7 +447,32 @@ export class Nothing<T>
   }
 }
 
+/**
+ * Construct an empty `Maybe`
+ *
+ * **Type Annotation**\
+ * `fNothing:: () -> Maybe a`
+ */
 export const fNothing = (): Maybe<never> => maybe.empty();
+
+/**
+ * Construct a `Maybe` with `Just` the given `value`.
+ *
+ * **Type Annotation**\
+ * `fJust:: a -> Maybe a`
+ */
 export const fJust = <T>(value: T): Maybe<T> => maybe.of<T>(value);
-export const fMaybe = <T>(defaultValue: T, value: T): Maybe<T> =>
-  maybe.of<T>(_.isUndefined(value) ? defaultValue : value);
+
+/**
+ * Construct a `Maybe` with `value` or given default, if `value` is `undefined`.
+ *
+ * **CAUTION:** Some restrictions are imposed, when using `lodash.curry` and type generics.
+ * There may be the need to use the 'fMaybe(...) as Maybe<TYPE>' syntax.
+ *
+ * **Type Annotation**\
+ * `fMaybe:: a -> a -> Maybe a`
+ */
+export const fMaybe = _.curry(
+  <T>(defaultValue: T, value: T): Maybe<T> =>
+    maybe.of<T>(_.isUndefined(value) ? defaultValue : value),
+);

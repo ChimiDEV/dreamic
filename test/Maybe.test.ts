@@ -16,7 +16,7 @@ describe('Monads/Maybe', () => {
   describe('Fantasy-Land', () => {
     const just = fJust(12);
     const nothing = fNothing();
-    const factoryMaybe = fMaybe(10, 13);
+    const factoryMaybe = fMaybe(10, 13) as Maybe<number>;
     const ofMaybe = maybe.of(99);
 
     describe('Functor', () => {
